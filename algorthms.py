@@ -30,3 +30,6 @@ def bubble_sort(unsorted_list: list, draw_data, sorting_speed: float):
                 is_sorted = False
         range_length -= 1
     draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
+
+def merge_sort():
+    print("hi")
