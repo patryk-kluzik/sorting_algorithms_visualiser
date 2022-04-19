@@ -89,4 +89,8 @@ class VisualiserUI:
         self.window.update_idletasks()
 
     def run_algorithm(self):
-        bubble_sort(self.array, draw_data=self.draw_array, sorting_speed=self.sort_speed_scale.get())
+        algorithm = self.algorithm_value.get()
+        if algorithm == "Bubble Sort":
+            bubble_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=self.sort_speed_scale.get())
+        elif algorithm == "Merge Sort":
+            merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array)-1, draw_data=self.draw_array, sorting_speed=self.sort_speed_scale.get())
