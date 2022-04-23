@@ -32,6 +32,32 @@ def bubble_sort(unsorted_list: list, draw_data, sorting_speed: float):
     draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
 
 
+def insertion_sort(unsorted_list: list, draw_data, sorting_speed: float):
+    """
+    Insertion sort loops through the entire array, starting with index 1.
+    Compare the element in array at index "i" to previous element, swap them if the previous element is larger and
+    decrease "i" by 1. Continue to compare element at "i" with the previous element ( i - 1 ), swap them if previous
+    element is larger, do this until reaching the start of the list or if the previous element is no longer larger.
+    This continues to happen until we loop through the entire list, at which point all elements will be sorted.
+
+    :param unsorted_list: list of unsorted elements
+    :param draw_data: function which will draw the data as its being sorted
+    :param sorting_speed: delay between drawing data
+    """
+    sorting_range = range(1, len(unsorted_list))
+
+    for i in sorting_range:
+        draw_data(unsorted_list, ["green" if x == i else "red" for x in range(len(unsorted_list))])
+        time.sleep(sorting_speed)
+        while unsorted_list[i - 1] > unsorted_list[i] and i > 0:
+            unsorted_list[i], unsorted_list[i - 1] = unsorted_list[i - 1], unsorted_list[i]
+            i -= 1
+            draw_data(unsorted_list, ["green" if x == i else "red" for x in range(len(unsorted_list))])
+            time.sleep(sorting_speed)
+
+    draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
+
+
 def merge_sort(unsorted_list: list, left_index, right_index, draw_data, sorting_speed: float):
     """
     This function takes a list and splits it's into smaller sublists by calling itself recursively, which then are
