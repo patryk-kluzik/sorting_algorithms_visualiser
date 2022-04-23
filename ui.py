@@ -7,6 +7,7 @@ class VisualiserUI:
 
     def __init__(self):
         self.array = []
+        self.algorithm_list = ["Bubble Sort", "Insertion Sort", "Merge Sort"]
 
         # ------------ root --------------#
         self.window = Tk()
@@ -55,7 +56,7 @@ class VisualiserUI:
 
         self.algorithm_menu = tkinter.ttk.Combobox(master=self.frame,
                                                    textvariable=self.algorithm_value,
-                                                   values=["Bubble Sort", "Merge Sort"])
+                                                   values=self.algorithm_list)
         self.algorithm_menu.grid(row=0, column=1, padx=5, pady=5)
         self.algorithm_menu.current(0)
 
@@ -90,7 +91,10 @@ class VisualiserUI:
 
     def run_algorithm(self):
         algorithm = self.algorithm_value.get()
+        speed = self.sort_speed_scale.get()
         if algorithm == "Bubble Sort":
-            bubble_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=self.sort_speed_scale.get())
+            bubble_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
         elif algorithm == "Merge Sort":
-            merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array)-1, draw_data=self.draw_array, sorting_speed=self.sort_speed_scale.get())
+            merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array)-1, draw_data=self.draw_array, sorting_speed=speed)
+        elif algorithm == "Insertion Sort":
+            insertion_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
