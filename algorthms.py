@@ -6,7 +6,7 @@ def get_random_list(list_size: int, min_value: int, max_value: int) -> list:
     return [randint(min_value, max_value) for _ in range(list_size)]
 
 
-def bubble_sort(unsorted_list: list, draw_data, sorting_speed: float):
+def bubble_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float):
     """
     Bubble sort algorithm compares the next element and swaps them if the current element is bigger than the next.
     This repeats until the end of the list or if no swaps were done (list is already sorted).
@@ -20,11 +20,16 @@ def bubble_sort(unsorted_list: list, draw_data, sorting_speed: float):
     """
     is_sorted = False
     range_length = len(unsorted_list) - 1
+    swaps = 0
+    comparisons = 0
     while not is_sorted:
         is_sorted = True
         for i in range(range_length):
+            comparisons += 1
             if unsorted_list[i] > unsorted_list[i + 1]:
                 unsorted_list[i + 1], unsorted_list[i] = unsorted_list[i], unsorted_list[i + 1]
+                swaps += 1
+                draw_info(swaps, comparisons)
                 draw_data(unsorted_list, ["green" if x == i + 1 else "red" for x in range(len(unsorted_list))])
                 time.sleep(sorting_speed)
                 is_sorted = False
