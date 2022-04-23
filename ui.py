@@ -7,7 +7,7 @@ class VisualiserUI:
 
     def __init__(self):
         self.array = []
-        self.algorithm_list = ["Bubble Sort", "Insertion Sort", "Merge Sort"]
+        self.algorithm_list = ["Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort"]
 
         # ------------ root --------------#
         self.window = Tk()
@@ -98,3 +98,5 @@ class VisualiserUI:
             merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array)-1, draw_data=self.draw_array, sorting_speed=speed)
         elif algorithm == "Insertion Sort":
             insertion_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
+        elif algorithm == "Selection Sort":
+            selection_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)

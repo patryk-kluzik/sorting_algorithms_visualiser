@@ -58,6 +58,66 @@ def insertion_sort(unsorted_list: list, draw_data, sorting_speed: float):
     draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
 
 
+def selection_sort(unsorted_list: list, draw_data, sorting_speed: float):
+    """
+    Selection sort looks for the lowest value in the array to be swapped with the first element.
+    This first element represents the sorted array, anything right of the array is unsorted.
+    It goes the next index, comparing the rest of the unsorted array and swapping it with the lowest value of the
+    unsorted array. This continues until we reach the last element, which would at this point be the biggest value.
+    The array is now sorted
+
+
+    :param unsorted_list: list of unsorted elements
+    :param draw_data: function which will draw the data as its being sorted
+    :param sorting_speed: delay between drawing data
+    """
+    sorting_range = range(0, len(unsorted_list) - 1)  # we skip the last element as it's already the biggest one
+
+    for i in sorting_range:
+        lowest_value_index = i  # set the index of the lowest value to the current index
+
+        for j in range(i + 1, len(unsorted_list)):  # check the remaining unsorted array
+            if unsorted_list[j] < unsorted_list[lowest_value_index]:  # if there is a smaller value
+                lowest_value_index = j  # set the lowest index to the current index
+            draw_data(unsorted_list, selection_sort_colour_array(unsorted_list, i, lowest_value_index, j))
+            time.sleep(sorting_speed / len(unsorted_list))
+
+        # if the lowest value isn't the current index
+        if lowest_value_index != i:
+            # swap the value of the current index with the value of the lowest index
+            unsorted_list[i], unsorted_list[lowest_value_index] = unsorted_list[lowest_value_index], unsorted_list[i]
+    # colour all elements green to show the list is now sorted
+    draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
+
+
+def selection_sort_colour_array(unsorted_list: list, sorting_index, lowest_value_index, current_index):
+    """
+    This function provides a list of colours which will be used in draw_data function to animate the sorting algorith.
+    It loops through the list and adds a colour for each element of the list. If the index is equal to the sorting_index
+    then we colour it green to represent the index that we're going to swap. If the index is however equal to the
+    lowest_value_index, we colour it yellow to represent what value is going to be swapped with the sorting_index.
+    If the index is the current_index we then colour it orange to represent where the comparison is taking place to look
+    for the next lowest value. Else, for every other index we colour it red to show it's currently not being compared.
+
+    :param unsorted_list: list of unsorted values
+    :param sorting_index: the point of the list that is currently being sorted
+    :param lowest_value_index: the lowest value to the right of the sorted array
+    :param current_index: the current index which we compare to the lowest value
+    :return: list of colours which represent the current sorting state
+    """
+    colour_list = []
+    for i in range(len(unsorted_list)):
+        if i == sorting_index:
+            colour_list.append("green")
+        elif i == lowest_value_index:
+            colour_list.append("yellow")
+        elif i == current_index:
+            colour_list.append("orange")
+        else:
+            colour_list.append("red")
+    return colour_list
+
+
 def merge_sort(unsorted_list: list, left_index, right_index, draw_data, sorting_speed: float):
     """
     This function takes a list and splits it's into smaller sublists by calling itself recursively, which then are
