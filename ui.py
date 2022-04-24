@@ -50,7 +50,7 @@ class VisualiserUI:
         self.max_value_scale.grid(row=1, column=2, padx=10, pady=5)
 
         self.sort_speed_scale = Scale(master=self.frame, orient=HORIZONTAL, length=200)
-        self.sort_speed_scale.config(resolution=0.05, from_=0.05, to=1,
+        self.sort_speed_scale.config(resolution=0.05, from_=0.05, to=2,
                                      font=self.font, label="Select Delay [s]")
         self.sort_speed_scale.grid(row=0, column=2, padx=10, pady=5)
 
@@ -84,7 +84,8 @@ class VisualiserUI:
                                  bg="black", fg="white")
         self.swaps_label.grid(row=1, column=0)
 
-        self.comparisons_label = Label(master=self.frame_info, text=f"Comparisons: \t\t{self.comparisons}\t", font=self.font
+        self.comparisons_label = Label(master=self.frame_info, text=f"Comparisons: \t\t{self.comparisons}\t",
+                                       font=self.font
                                        , bg="black", fg="white")
         self.comparisons_label.grid(row=2, column=0, pady=25)
 
@@ -104,8 +105,6 @@ class VisualiserUI:
 
         self.swaps_label.config(text=f"Swaps: \t\t\t{self.swaps}\t")
         self.comparisons_label.config(text=f"Comparisons: \t\t{self.comparisons}\t")
-
-
 
     def draw_array(self, random_list, color_array):
         self.canvas.delete("all")
@@ -135,10 +134,14 @@ class VisualiserUI:
         if current_algorithm == "Bubble Sort":
             bubble_sort(unsorted_list=self.array, draw_data=self.draw_array,
                         draw_info=self.draw_info, sorting_speed=speed)
+        elif current_algorithm == "Insertion Sort":
+            insertion_sort(unsorted_list=self.array, draw_data=self.draw_array,
+                           draw_info=self.draw_info, sorting_speed=speed)
+        elif current_algorithm == "Selection Sort":
+            selection_sort(unsorted_list=self.array, draw_data=self.draw_array,
+                           draw_info=self.draw_info, sorting_speed=speed)
         elif current_algorithm == "Merge Sort":
             merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array) - 1,
-                       draw_data=self.draw_array, sorting_speed=speed)
-        elif current_algorithm == "Insertion Sort":
-            insertion_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
-        elif current_algorithm == "Selection Sort":
-            selection_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
+                       draw_data=self.draw_array, draw_info=self.draw_info, sorting_speed=speed)
+
+# TODO: fix issue of app crash on mouse click during draw_array
