@@ -9,6 +9,8 @@ class VisualiserUI:
         self.array = []
         self.algorithm_list = ["Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort"]
         self.font = ("Prompt", 10, "normal")
+        self.swaps = 0
+        self.comparisons = 0
 
         # ------------ root --------------#
         self.window = Tk()
@@ -26,7 +28,7 @@ class VisualiserUI:
 
         # ------------ Canvas --------------#
         self.canvas = Canvas(master=self.window, width=900, height=460, bg="black", highlightthickness=0)
-        self.canvas.grid(row=1, column=0, padx=5, pady=5, columnspan=2)
+        self.canvas.grid(row=1, column=0, padx=5, pady=5, columnspan=3)
 
         # ------------ Scale --------------#
         self.list_size_scale = Scale(master=self.frame, orient=HORIZONTAL)
@@ -74,44 +76,43 @@ class VisualiserUI:
         self.algorithm_menu.grid(row=0, column=1, padx=5, pady=5)
         self.algorithm_menu.current(0)
 
-        self.algorithm_label_info = Label(master=self.frame_info, text=f"{self.algorithm_value.get()}", font=self.font,
-                                 bg="black", fg="white")
+        self.algorithm_label_info = Label(master=self.frame_info, text=f"", font=self.font,
+                                          bg="black", fg="white", width=30)
         self.algorithm_label_info.grid(row=0, column=0)
 
-        self.swaps_label = Label(master=self.frame_info, text="Swaps: ", font=self.font,
+        self.swaps_label = Label(master=self.frame_info, text=f"Swaps: \t\t\t{self.swaps}\t", font=self.font,
                                  bg="black", fg="white")
         self.swaps_label.grid(row=1, column=0)
 
-        self.swaps_label_num = Label(master=self.frame_info, text="0", font=self.font,
-                                     bg="black", fg="white", width=20)
-        self.swaps_label_num.grid(row=1, column=1)
-
-        self.comparisons_label = Label(master=self.frame_info, text="Comparisons: ", font=self.font
+        self.comparisons_label = Label(master=self.frame_info, text=f"Comparisons: \t\t{self.comparisons}\t", font=self.font
                                        , bg="black", fg="white")
         self.comparisons_label.grid(row=2, column=0, pady=25)
 
-        self.comparisons_label_num = Label(master=self.frame_info, text="0", font=self.font, bg="black", fg="white")
-        self.comparisons_label_num.grid(row=2, column=1)
-
         self.window.mainloop()
-
 
     def get_array_values(self):
         self.array = get_random_list(list_size=self.list_size_scale.get(),
                                      min_value=self.min_value_scale.get(),
                                      max_value=self.max_value_scale.get())
-        self.draw_array(random_list=self.array, color_array=["red" for x in range(self.list_size_scale.get())])
+        self.draw_array(random_list=self.array, color_array=["white" for x in range(self.list_size_scale.get())])
         return self.array
 
     def draw_info(self, swaps, comparisons):
-        pass
+
+        self.swaps = swaps
+        self.comparisons = comparisons
+
+        self.swaps_label.config(text=f"Swaps: \t\t\t{self.swaps}\t")
+        self.comparisons_label.config(text=f"Comparisons: \t\t{self.comparisons}\t")
+
+
 
     def draw_array(self, random_list, color_array):
         self.canvas.delete("all")
-        offset = 30
+        offset = 10
         c_width = 900 - (offset / 2)
         c_height = 460
-        spacing = 5
+        spacing = 2
         x_width = c_width / self.list_size_scale.get()
 
         normalised_data = [i / max(random_list) for i in random_list]
@@ -126,14 +127,18 @@ class VisualiserUI:
         self.window.update_idletasks()
 
     def run_algorithm(self):
-        algorithm = self.algorithm_value.get()
+        current_algorithm = self.algorithm_value.get()
+        self.algorithm_label_info.config(text=f"{current_algorithm}")
+        self.draw_info(swaps=0, comparisons=0)
+
         speed = self.sort_speed_scale.get()
-        if algorithm == "Bubble Sort":
-            bubble_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
-        elif algorithm == "Merge Sort":
+        if current_algorithm == "Bubble Sort":
+            bubble_sort(unsorted_list=self.array, draw_data=self.draw_array,
+                        draw_info=self.draw_info, sorting_speed=speed)
+        elif current_algorithm == "Merge Sort":
             merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array) - 1,
                        draw_data=self.draw_array, sorting_speed=speed)
-        elif algorithm == "Insertion Sort":
+        elif current_algorithm == "Insertion Sort":
             insertion_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)
-        elif algorithm == "Selection Sort":
+        elif current_algorithm == "Selection Sort":
             selection_sort(unsorted_list=self.array, draw_data=self.draw_array, sorting_speed=speed)

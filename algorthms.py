@@ -30,7 +30,7 @@ def bubble_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float)
                 unsorted_list[i + 1], unsorted_list[i] = unsorted_list[i], unsorted_list[i + 1]
                 swaps += 1
                 draw_info(swaps, comparisons)
-                draw_data(unsorted_list, ["green" if x == i + 1 else "red" for x in range(len(unsorted_list))])
+                draw_data(unsorted_list, ["green" if x == i + 1 else "white" for x in range(len(unsorted_list))])
                 time.sleep(sorting_speed)
                 is_sorted = False
         range_length -= 1
@@ -52,12 +52,12 @@ def insertion_sort(unsorted_list: list, draw_data, sorting_speed: float):
     sorting_range = range(1, len(unsorted_list))
 
     for i in sorting_range:
-        draw_data(unsorted_list, ["green" if x == i else "red" for x in range(len(unsorted_list))])
+        draw_data(unsorted_list, ["green" if x == i else "white" for x in range(len(unsorted_list))])
         time.sleep(sorting_speed)
         while unsorted_list[i - 1] > unsorted_list[i] and i > 0:
             unsorted_list[i], unsorted_list[i - 1] = unsorted_list[i - 1], unsorted_list[i]
             i -= 1
-            draw_data(unsorted_list, ["green" if x == i else "red" for x in range(len(unsorted_list))])
+            draw_data(unsorted_list, ["green" if x == i else "white" for x in range(len(unsorted_list))])
             time.sleep(sorting_speed)
 
     draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
@@ -100,9 +100,9 @@ def selection_sort_colour_array(unsorted_list: list, sorting_index, lowest_value
     This function provides a list of colours which will be used in draw_data function to animate the sorting algorith.
     It loops through the list and adds a colour for each element of the list. If the index is equal to the sorting_index
     then we colour it green to represent the index that we're going to swap. If the index is however equal to the
-    lowest_value_index, we colour it yellow to represent what value is going to be swapped with the sorting_index.
-    If the index is the current_index we then colour it orange to represent where the comparison is taking place to look
-    for the next lowest value. Else, for every other index we colour it red to show it's currently not being compared.
+    lowest_value_index, we colour it orange to represent what value is going to be swapped with the sorting_index.
+    If the index is the current_index we then colour it red to represent where the comparison is taking place to look
+    for the next lowest value. Else, for every other index we colour it white to show it's currently not being compared.
 
     :param unsorted_list: list of unsorted values
     :param sorting_index: the point of the list that is currently being sorted
@@ -115,11 +115,11 @@ def selection_sort_colour_array(unsorted_list: list, sorting_index, lowest_value
         if i == sorting_index:
             colour_list.append("green")
         elif i == lowest_value_index:
-            colour_list.append("yellow")
-        elif i == current_index:
             colour_list.append("orange")
-        else:
+        elif i == current_index:
             colour_list.append("red")
+        else:
+            colour_list.append("white")
     return colour_list
 
 
@@ -240,7 +240,7 @@ def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data,
         sorted_index += 1
 
     draw_data(unsorted_list,
-              ["green" if left_index <= x <= right_index else "red" for x in range(len(unsorted_list))])
+              ["green" if left_index <= x <= right_index else "white" for x in range(len(unsorted_list))])
 
 
 def get_colour_array(length, left_array, middle_array, right_array) -> list:
@@ -249,8 +249,8 @@ def get_colour_array(length, left_array, middle_array, right_array) -> list:
     what elements of the list are being compared. This function goes through all the elements
     in the list to provide them with colour values. If the element at the index i between left_array and right_array,
     we will colour it as the sublist. If the element at index i is between left_array and middle_array, we will
-    colour is as yellow (showing the l_array sublist), else (if i is not smaller than middle_index) we will colour
-    it orange (showing the r_array sublist). The rest of the elements will be coloured red, as they are not part of the
+    colour is as orange (showing the l_array sublist), else (if i is not smaller than middle_index) we will colour
+    it red (showing the r_array sublist). The rest of the elements will be coloured white, as they are not part of the
     sublists that are being compared.
 
 
@@ -264,12 +264,11 @@ def get_colour_array(length, left_array, middle_array, right_array) -> list:
     colour_array = []
 
     for i in range(length):
-        print(f"l: {left_array}", f"r: {right_array}", middle_array, f"i: {i}", colour_array)
         if left_array <= i <= right_array:
             if left_array <= i <= middle_array:
-                colour_array.append("yellow")
-            else:
                 colour_array.append("orange")
+            else:
+                colour_array.append("red")
         else:
-            colour_array.append("red")
+            colour_array.append("white")
     return colour_array
