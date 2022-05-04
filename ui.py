@@ -1,4 +1,5 @@
 import tkinter.ttk
+import threading
 from algorthms import *
 from tkinter import *
 
@@ -11,6 +12,7 @@ class VisualiserUI:
         self.font = ("Prompt", 10, "normal")
         self.swaps = 0
         self.comparisons = 0
+        self.stop = True
 
         # ------------ root --------------#
         self.window = Tk()
@@ -60,7 +62,7 @@ class VisualiserUI:
         self.generate_button.grid(row=1, column=3, padx=10, pady=5)
 
         self.run_algorithm_button = Button(master=self.frame, text="Run algorith",
-                                           font=self.font, command=self.run_algorithm)
+                                           font=self.font, command=lambda: self.start_run_algorithm(None))
         self.run_algorithm_button.grid(row=0, column=3, padx=10, pady=5)
 
         # ------------ Labels --------------#
@@ -92,10 +94,11 @@ class VisualiserUI:
         self.window.mainloop()
 
     def get_array_values(self):
-        self.array = get_random_list(list_size=self.list_size_scale.get(),
-                                     min_value=self.min_value_scale.get(),
-                                     max_value=self.max_value_scale.get())
-        self.draw_array(random_list=self.array, color_array=["white" for x in range(self.list_size_scale.get())])
+        if self.stop:
+            self.array = get_random_list(list_size=self.list_size_scale.get(),
+                                         min_value=self.min_value_scale.get(),
+                                         max_value=self.max_value_scale.get())
+            self.draw_array(random_list=self.array, color_array=["white" for x in range(self.list_size_scale.get())])
         return self.array
 
     def draw_info(self, swaps, comparisons):
@@ -125,7 +128,27 @@ class VisualiserUI:
 
         self.window.update_idletasks()
 
+    def start_run_algorithm(self, event):
+        global submit_thread
+        submit_thread = threading.Thread(target=self.run_algorithm)
+        submit_thread.daemon = True
+        submit_thread.start()
+        self.window.after(0, self.check_submit_thread)
+
+    def check_submit_thread(self):
+        if submit_thread.is_alive():
+            self.window.after(0, self.check_submit_thread)
+
+    def check_if_algorithm_stopped(self):
+        return self.stop
+
+    def stop_algorithm(self):
+        self.run_algorithm_button.config(text="Run Algorithm", command=lambda: self.start_run_algorithm(None))
+        self.stop = True
+
     def run_algorithm(self):
+        self.stop = False
+        self.run_algorithm_button.config(text="Stop Algorithm", command=self.stop_algorithm)
         current_algorithm = self.algorithm_value.get()
         self.algorithm_label_info.config(text=f"{current_algorithm}")
         self.draw_info(swaps=0, comparisons=0)
@@ -133,15 +156,16 @@ class VisualiserUI:
         speed = self.sort_speed_scale.get()
         if current_algorithm == "Bubble Sort":
             bubble_sort(unsorted_list=self.array, draw_data=self.draw_array,
-                        draw_info=self.draw_info, sorting_speed=speed)
+                        draw_info=self.draw_info, sorting_speed=speed, stop_alg=self.check_if_algorithm_stopped)
         elif current_algorithm == "Insertion Sort":
             insertion_sort(unsorted_list=self.array, draw_data=self.draw_array,
-                           draw_info=self.draw_info, sorting_speed=speed)
+                           draw_info=self.draw_info, sorting_speed=speed, stop_alg=self.check_if_algorithm_stopped)
         elif current_algorithm == "Selection Sort":
             selection_sort(unsorted_list=self.array, draw_data=self.draw_array,
-                           draw_info=self.draw_info, sorting_speed=speed)
+                           draw_info=self.draw_info, sorting_speed=speed, stop_alg=self.check_if_algorithm_stopped)
         elif current_algorithm == "Merge Sort":
             merge_sort(unsorted_list=self.array, left_index=0, right_index=len(self.array) - 1,
-                       draw_data=self.draw_array, draw_info=self.draw_info, sorting_speed=speed)
+                       draw_data=self.draw_array, draw_info=self.draw_info, sorting_speed=speed,
+                       stop_alg=self.check_if_algorithm_stopped)
 
 # TODO: fix issue of app crash on mouse click during draw_array

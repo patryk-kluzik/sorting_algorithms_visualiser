@@ -6,13 +6,14 @@ def get_random_list(list_size: int, min_value: int, max_value: int) -> list:
     return [randint(min_value, max_value) for _ in range(list_size)]
 
 
-def bubble_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float):
+def bubble_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float, stop_alg):
     """
     Bubble sort algorithm compares the next element and swaps them if the current element is bigger than the next.
     This repeats until the end of the list or if no swaps were done (list is already sorted).
     With each iteration we loop from the start of the list but decrease the range by 1 (the last element is already the
     largest element in the list therefore no swaps need to be done).
     The bubble sort is complete when no more swaps are performed during an iteration.
+    :param stop_alg: checks if the function was stopped
     :param draw_info: function which draws the number of swaps and comparisons
     :param draw_data: function which draws the data to the screen
     :param sorting_speed: speed at which the program will sleep to show the sorting process
@@ -29,6 +30,8 @@ def bubble_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float)
             comparisons += 1
             draw_info(swaps, comparisons)
             if unsorted_list[i] > unsorted_list[i + 1]:
+                if stop_alg():
+                    return
                 unsorted_list[i + 1], unsorted_list[i] = unsorted_list[i], unsorted_list[i + 1]
                 swaps += 1
                 draw_info(swaps, comparisons)
@@ -39,7 +42,7 @@ def bubble_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float)
     draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
 
 
-def insertion_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float):
+def insertion_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float, stop_alg):
     """
     Insertion sort loops through the entire array, starting with index 1.
     Compare the element in array at index "i" to previous element, swap them if the previous element is larger and
@@ -47,6 +50,7 @@ def insertion_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: flo
     element is larger, do this until reaching the start of the list or if the previous element is no longer larger.
     This continues to happen until we loop through the entire list, at which point all elements will be sorted.
 
+    :param stop_alg: checks if the function was stopped
     :param draw_info: function which draws the number of swaps and comparisons
     :param unsorted_list: list of unsorted elements
     :param draw_data: function which will draw the data as its being sorted
@@ -57,11 +61,15 @@ def insertion_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: flo
     comparisons = 0
 
     for i in sorting_range:
+        if stop_alg():
+            return
         draw_data(unsorted_list, ["green" if x == i else "white" for x in range(len(unsorted_list))])
         time.sleep(sorting_speed)
         comparisons += 1
         draw_info(swaps, comparisons)
         while unsorted_list[i - 1] > unsorted_list[i] and i > 0:
+            if stop_alg():
+                return
             swaps += 1
             comparisons += 1
             unsorted_list[i], unsorted_list[i - 1] = unsorted_list[i - 1], unsorted_list[i]
@@ -73,7 +81,7 @@ def insertion_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: flo
     draw_data(unsorted_list, ["green" for _ in range(len(unsorted_list))])
 
 
-def selection_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float):
+def selection_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: float, stop_alg):
     """
     Selection sort looks for the lowest value in the array to be swapped with the first element.
     This first element represents the sorted array, anything right of the array is unsorted.
@@ -82,6 +90,7 @@ def selection_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: flo
     The array is now sorted
 
 
+    :param stop_alg: checks if the function was stopped
     :param draw_info: function which draws the number of swaps and comparisons
     :param unsorted_list: list of unsorted elements
     :param draw_data: function which will draw the data as its being sorted
@@ -92,9 +101,13 @@ def selection_sort(unsorted_list: list, draw_data, draw_info, sorting_speed: flo
     swaps = 0
 
     for i in sorting_range:
+        if stop_alg():
+            return
         lowest_value_index = i  # set the index of the lowest value to the current index
         draw_info(swaps, comparisons)
         for j in range(i + 1, len(unsorted_list)):  # check the remaining unsorted array
+            if stop_alg():
+                return
             comparisons += 1
             if unsorted_list[j] < unsorted_list[lowest_value_index]:  # if there is a smaller value
                 lowest_value_index = j  # set the lowest index to the current index
@@ -140,7 +153,7 @@ def selection_sort_colour_array(unsorted_list: list, sorting_index, lowest_value
     return colour_list
 
 
-def merge_sort(unsorted_list: list, left_index, right_index, draw_data, draw_info, sorting_speed: float):
+def merge_sort(unsorted_list: list, left_index, right_index, draw_data, draw_info, sorting_speed: float, stop_alg):
     """
     This function takes a list and splits it's into smaller sublists by calling itself recursively, which then are
     merged by the merge function. The function finds the middle point to divide the array into two halves.
@@ -162,6 +175,7 @@ def merge_sort(unsorted_list: list, left_index, right_index, draw_data, draw_inf
     until the list cannot be split anymore and the left_array is not longer smaller than the right_array
 
 
+    :param stop_alg: checks if the function was stopped
     :param draw_info: function which draws the number of swaps and comparisons
     :param unsorted_list: a list of unsorted elements
     :param left_index: the left most index (0)
@@ -169,14 +183,17 @@ def merge_sort(unsorted_list: list, left_index, right_index, draw_data, draw_inf
     :param draw_data: function which draws data in the UI class
     :param sorting_speed: float that determines the delay of the sorting speed
     """
+    if stop_alg():
+        return
     if left_index < right_index:
         middle_index = (left_index + right_index) // 2
-        merge_sort(unsorted_list, left_index, middle_index, draw_data, draw_info, sorting_speed)
-        merge_sort(unsorted_list, middle_index + 1, right_index, draw_data, draw_info, sorting_speed)
-        merge(unsorted_list, left_index, middle_index, right_index, draw_data, draw_info, sorting_speed)
+        merge_sort(unsorted_list, left_index, middle_index, draw_data, draw_info, sorting_speed, stop_alg)
+        merge_sort(unsorted_list, middle_index + 1, right_index, draw_data, draw_info, sorting_speed, stop_alg)
+        merge(unsorted_list, left_index, middle_index, right_index, draw_data, draw_info, sorting_speed, stop_alg)
 
 
-def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data, draw_info, sorting_speed: float):
+def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data, draw_info,
+          sorting_speed: float, stop_alg):
     """
     The entire unsorted list is passed into the function. The array is then drawn using the draw data function.
     We split the array into the l_array and r_array (left array takes the values of the unsorted list between
@@ -217,6 +234,7 @@ def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data,
     to the first element of the l_array , therefore unsorted_list goes from [7,7] to [7,10] completing the swap.)
 
 
+    :param stop_alg: checks if the function was stopped
     :param draw_info: function which draws the number of swaps and comparisons
     :param unsorted_list: a list of unsorted elements
     :param left_index: the left most index passed
@@ -226,7 +244,8 @@ def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data,
     :param sorting_speed: float that determines the delay of the sorting speed
     :return:
     """
-
+    if stop_alg():
+        return
     draw_data(unsorted_list, get_colour_array(len(unsorted_list), left_index, middle_index, right_index))
     time.sleep(sorting_speed)
 
@@ -238,7 +257,8 @@ def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data,
     sorted_index = left_index
 
     while l_array_index < len(l_array) and r_array_index < len(r_array):
-
+        if stop_alg():
+            return
         if l_array[l_array_index] <= r_array[r_array_index]:
             unsorted_list[sorted_index] = l_array[l_array_index]
             l_array_index += 1
@@ -249,17 +269,22 @@ def merge(unsorted_list: list, left_index, middle_index, right_index, draw_data,
         sorted_index += 1
 
     while l_array_index < len(l_array):
+        if stop_alg():
+            return
         unsorted_list[sorted_index] = l_array[l_array_index]
         l_array_index += 1
         sorted_index += 1
 
     while r_array_index < len(r_array):
+        if stop_alg():
+            return
         unsorted_list[sorted_index] = r_array[r_array_index]
         r_array_index += 1
         sorted_index += 1
 
     draw_data(unsorted_list,
               ["green" if left_index <= x <= right_index else "white" for x in range(len(unsorted_list))])
+    time.sleep(sorting_speed)
 
 
 def get_colour_array(length, left_array, middle_array, right_array) -> list:
